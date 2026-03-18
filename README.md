@@ -18,53 +18,12 @@
 # 🧠 System Architecture
 
 ```
-Frontend (React)
-        ↓
-Spring Boot API
-        ↓
-PostgreSQL
-        ↓
-Kafka (Event Streaming)
-        ↓
-Consumer (Async Processing)
-        ↓
-Redis (Caching)
-        ↓
-Zipkin (Tracing)
+Frontend → Spring Boot → PostgreSQL → Kafka → Consumer → Redis → Zipkin
 ```
 
 ---
 
-# ✨ Features
-
-- ⚡ High-throughput payment processing  
-- 🔁 Idempotency (duplicate prevention)  
-- 📡 Kafka-based event-driven architecture  
-- ⚡ Redis caching for fast response  
-- 🔍 Distributed tracing with Zipkin  
-- 🐳 Fully Dockerized setup  
-- 🎯 Clean layered architecture  
-- ⚛️ React frontend dashboard  
-
----
-
-# 🛠️ Tech Stack
-
-- Java 21  
-- Spring Boot  
-- PostgreSQL  
-- Redis  
-- Kafka  
-- Docker  
-- Zipkin  
-- React (Vite)  
-
----
-
-# 🚀 Setup Guide
-
-## Clone Project
-git clone https://github.com/AVBalajee/payment-gateway-engine.git
+# 🚀 Setup
 
 ## Start Docker
 docker compose up -d
@@ -80,11 +39,86 @@ npm run dev
 
 ---
 
-# 📡 API Endpoints
+# 📡 API Endpoints (Full Documentation)
 
-POST /api/payments  
-GET /api/payments  
+## 🟢 Create Payment
+
+POST /api/payments
+
+### Request Body
+{
+  "amount": 1500,
+  "currency": "INR",
+  "merchantId": "merchant_001",
+  "customerId": "cust_900",
+  "paymentMethod": "CARD",
+  "idempotencyKey": "txn_001"
+}
+
+### Response
+{
+  "id": 1,
+  "amount": 1500,
+  "currency": "INR",
+  "status": "CREATED"
+}
+
+---
+
+## 🔵 Get All Payments
+
+GET /api/payments
+
+### Response
+[
+  {
+    "id": 1,
+    "amount": 1500,
+    "currency": "INR",
+    "status": "CREATED"
+  }
+]
+
+---
+
+## 🟡 Get Payment by ID
+
 GET /api/payments/{id}
+
+### Example
+GET /api/payments/1
+
+### Response
+{
+  "id": 1,
+  "amount": 1500,
+  "currency": "INR",
+  "status": "SUCCESS"
+}
+
+---
+
+## 🔁 Idempotency Behavior
+
+Same idempotencyKey will not create duplicate payment.
+
+Example:
+txn_001 → same transaction returned
+
+---
+
+## 🧪 Curl Test
+
+curl -X POST http://localhost:8080/api/payments \
+-H "Content-Type: application/json" \
+-d '{
+  "amount": 1500,
+  "currency": "INR",
+  "merchantId": "merchant_001",
+  "customerId": "cust_900",
+  "paymentMethod": "CARD",
+  "idempotencyKey": "txn_001"
+}'
 
 ---
 
